@@ -21,10 +21,7 @@ func main() {
 	done := make(chan struct{})
 	defer close(done)
 
-	// handle os signals
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-
-	// ctx to terminate all goroutines
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go func() {
@@ -32,7 +29,7 @@ func main() {
 		done <- struct{}{}
 	}()
 
-	<-sigs   // wait for a signal
-	cancel() // stop server
-	<-done   // wait for server to stop
+	<-sigs
+	cancel()
+	<-done
 }
